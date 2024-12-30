@@ -1,17 +1,14 @@
 const express = require('express');
+const itemController = require('../controllers/item');
 
 const router = express.Router();
 
-router.get('/:id', (req, res, next) => {
-    res.send('Getting an item with specific id');
-})
+router.get('/:id', itemController.getItem);
 
-router.post('/', (req, res, next) => {
-    res.send('Creating a new item');
-});
+router.post('/', itemController.createItem);
 
-router.delete('/:id', (req, res, next) => {
-    res.send('Deleting an item with specific id');
-});
+router.delete('/:id', itemController.deleteItem);
+
+router.get('/', itemController.showItemNotFoundError);
 
 module.exports = router;
