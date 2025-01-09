@@ -1,13 +1,10 @@
 const express = require('express');
+const itemsController = require('../controllers/items')
 
 const router = express.Router();
 
-router.get('/', (req, res, next) => {
-    res.send('Get all items');
-});
+router.get('/', itemsController.getAllItems);
 
-router.delete('/', (req, res, next) => {
-    res.send('Delete all items');
-});
+router.delete('/', itemsController.deleteAllItems);
 
 module.exports = router;
