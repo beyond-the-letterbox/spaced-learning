@@ -1,4 +1,4 @@
-const itemModel = require('../models/item');
+const Item = require('../models/item');
 
 const getItem = function(req, res, next) {
     const matchedItem = itemModel.items.find(item => item.id === req.params.id);
@@ -7,9 +7,10 @@ const getItem = function(req, res, next) {
 }
 
 const createItem = function(req, res, next) {
-    const newItem = itemModel.createItem(1, 'new', 'my item', 'my item answer', 'category');
+    const newItem = new Item('Hahaha', 'What is new item?', "I dont know", 'Stupid questions');
     newItem.save();
-    res.send('Creating a new item');
+    newItem.deleteAll();
+  //  res.send('Creating a new item');
 }
 
 const deleteItem = function(req, res, next) {
@@ -17,7 +18,9 @@ const deleteItem = function(req, res, next) {
 }
 
 const showItemNotFoundError = function(req, res, next) {
-    res.send('Page not found! Please provide a valid item id.');
+    console.log('item')
+    createItem();
+    //res.send('Page not found! Please provide a valid item id.');
 }
 
 module.exports = {
