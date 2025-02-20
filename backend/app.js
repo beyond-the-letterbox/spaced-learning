@@ -1,4 +1,7 @@
 const express = require('express');
+const mongoDbConnect = require('./utils/database');
+
+
 const itemsRoutes = require('./routes/items');
 const itemRoutes = require('./routes/item');
 
@@ -12,4 +15,6 @@ app.get('/', (req, res, next) => {
     res.send('Great to start a new project!');
 });
 
-app.listen(3000);
+mongoDbConnect(() => {
+  app.listen(3000);
+});
