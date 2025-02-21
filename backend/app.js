@@ -1,17 +1,17 @@
 const express = require('express');
+
 const connectMongoDb = require('./utils/database').connectMongoDb;
 
-const itemsRoutes = require('./routes/items');
-const itemRoutes = require('./routes/item');
+const flashcardsRoutes = require('./routes/flashcards');
+const flashcardRoutes = require('./routes/flashcard');
 
 const app = express();
 
-app.use('/item', itemRoutes);
-
-app.use('/items', itemsRoutes);
+app.use('/flashcards', flashcardsRoutes);
+app.use('/flashcard', flashcardRoutes);
 
 app.get('/', (req, res, next) => {
-    res.send('Great to start a new project!');
+    res.send('Welcome to the spaced learning project!');
 });
 
 connectMongoDb(() => app.listen(3000));
