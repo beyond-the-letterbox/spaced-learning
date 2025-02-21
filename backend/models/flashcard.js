@@ -1,6 +1,7 @@
 const getDb = require('../utils/database').getDb;
+const collectionName = 'flashcards';
 
-class Item {
+class Flashcard {
     constructor(title, question, answer, category) {
         this.title = title;
         this.question = question;
@@ -11,17 +12,11 @@ class Item {
     save() {
         const db = getDb();
 
-        db.collection('items')
+        db.collection(collectionName)
             .insertOne(this)
             .then(result => console.log(result))
             .catch(error => console.log(error))
     }
-
-    deleteAll() {
-        const db = getDb();
-
-        db.collection('items').deleteMany({});
-    }
 }
 
-module.exports = Item;
+module.exports = Flashcard;

@@ -6,7 +6,7 @@ let _db;
 
 exports.connectMongoDb = (callback) => {
     MongoClient
-        .connect(`mongodb+srv://klaudia:${mongoDbPassword}@cluster0.2pz2f.mongodb.net/items?retryWrites=true&w=majority&appName=Cluster0`)
+        .connect(`mongodb+srv://klaudia:${mongoDbPassword}@cluster0.2pz2f.mongodb.net/spaced-learning?retryWrites=true&w=majority&appName=Cluster0`)
         .then((client) => {
             console.log('Successfully connected to database!');
             _db = client.db();
