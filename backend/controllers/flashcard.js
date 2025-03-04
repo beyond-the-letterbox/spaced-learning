@@ -1,7 +1,23 @@
 const Flashcard = require('../models/flashcard');
+const { getDb } = require('../utils/database');
+const collectionName = 'flashcards';
 
 const getFlashcard = function(req, res, next) {
-    res.send('Getting an item with specific id');
+    const db = getDb();
+    const id = req.params.id;
+
+    db.collection(collectionName)
+        .findOne({
+            id
+        })
+        .then(flashcard => {
+            if (flashcard) {
+                res.json(flashcard)
+            } else {
+                res.json({})
+            }
+        })
+        .catch(err => console.log(err));
 }
 
 const createFlashcard = function(req, res, next) {
