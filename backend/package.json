@@ -2,18 +2,29 @@
   "name": "sl-backend",
   "version": "1.0.0",
   "description": "Backend service for spaced learning project.",
-  "main": "app.js",
+  "main": "app.ts",
   "scripts": {
-    "start": "nodemon app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "ts-node app.ts",
+    "dev": "nodemon --exec ts-node app.ts",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write \"**/*.{js,ts}\""
   },
   "author": "Klaudia Włodarczyk",
   "license": "MIT",
   "devDependencies": {
-    "nodemon": "^3.1.9"
+    "@types/express": "^5.0.2",
+    "@types/node": "^22.15.21",
+    "nodemon": "^3.1.9",
+    "prettier": "^3.5.3",
+    "prisma": "^6.8.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   },
   "dependencies": {
+    "@prisma/client": "^6.8.2",
+    "body-parser": "^2.2.0",
+    "dotenv": "^16.5.0",
     "express": "^4.21.2",
-    "mongodb": "^6.13.0"
+    "mysql2": "^3.14.1"
   }
 }
