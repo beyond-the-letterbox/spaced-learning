@@ -1,20 +1,20 @@
 import express from 'express';
 import db from './src/utils/database';
 import bodyParser from 'body-parser';
-import * as usersRoutes from './src/routes/users';
-import { PrismaClient } from "@prisma/client";
 
+// Routes
+import authRoutes from './src/routes/auth';
 
 db.execute('SELECT * FROM users')
   .then((result) => console.log(result))
   .catch((error) => console.log(error));
 
 const app = express();
-const prisma = new PrismaClient();
 
 app.use(bodyParser.json());
 
 // Routes
+app.use('/api/auth', authRoutes);
 
 app.get('/', (req, res, next) => {
   res.send('Welcome to the spaced learning project!');

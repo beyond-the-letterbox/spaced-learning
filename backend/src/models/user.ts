@@ -6,3 +6,11 @@ export interface User {
   created_at: Date;
   updated_at: Date;
 }
+
+export type RegisterUserApiResponse = {
+  user: Omit<User, 'password_hash'>;
+  tokens: {
+    accessToken: string;
+    refreshToken: string;
+  };
+};

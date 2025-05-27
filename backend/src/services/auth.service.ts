@@ -1,0 +1,120 @@
+import { PrismaClient } from "@prisma/client";
+import {RegisterUserApiResponse, User} from "../models";
+import * as bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import {
+    JWT_EXPIRES_IN,
+    JWT_SECRET,
+    REFRESH_TOKEN_EXPIRES_IN,
+    REFRESH_TOKEN_SECRET
+} from "./auth.config";
+
+export class AuthService {
+    #prisma!: PrismaClient;
+
+    constructor() {
+        this.#prisma = new PrismaClient();
+    }
+
+    /**
+     * Register a new user
+     * @param email - The user's email address
+     * @param password - The user's password (will be hashed)
+     * @param name - Optional display name
+     * @returns Promise with the created user (without password)
+     * @throws Will throw if email is already registered
+     */
+    public async register(email: string, password: string, name?: string): Promise<RegisterUserApiResponse> {
+        const existingUser = await (this.#prisma as any).users.findUnique({
+            where: { email }
+        });
+
+        if (existingUser) {
+            throw new Error('Email is already registered');
+        }
+
+        const hashedPassword = await this.hashPassword(password);
+        const user = await this.#prisma.users.create({
+            data: {
+                email,
+                password_hash: hashedPassword,
+                name: name || email.split('@')[0],
+            }
+        }) as User;
+        const { password_hash, ...userWithoutPassword } = user;
+        const tokens = this.generateTokens(user);
+
+        return {
+            user: userWithoutPassword as User,
+            tokens
+        };
+    }
+
+    /**
+     * Login a user
+     * @param email - The user's email address
+     * @param password - The user's password
+     * @returns Promise with the user (without password) and tokens
+     * @throws Will throw if email is not found or password is invalid
+     */
+    public async login(email: string, password: string): Promise<RegisterUserApiResponse> {
+        const user = await this.#prisma.users.findUnique({ where: { email}}) as User;
+
+        if (!user) {
+            throw new Error('Invalid email or password');
+        }
+
+        const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+
+        if (!isPasswordValid) {
+            throw new Error('Invalid email or password');
+        }
+
+        const { password_hash, ...userWithoutPassword } = user;
+        const tokens = this.generateTokens(user);
+
+        return {
+            user: userWithoutPassword as User,
+            tokens
+        };
+    }
+
+    /**
+     * Get user by ID
+     * @param userId - The user's ID
+     * @returns Promise with the user (without password)
+     * @throws Will throw if user is not found
+     */
+    public async getCurrentUser(userId: number): Promise<User> {
+        const user = await this.#prisma.users.findUnique({where: {id: userId}}) as User;
+
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        return user;
+    }
+
+    private async hashPassword(password: string): Promise<string> {
+        const salt = await bcrypt.genSalt(10);
+
+        return bcrypt.hash(password, salt);
+    }
+
+    private generateTokens(user: User): {accessToken: string, refreshToken: string } {
+        const accessToken = jwt.sign(
+            {id: user.id, email: user.email },
+            JWT_SECRET,
+            { expiresIn: JWT_EXPIRES_IN }
+        );
+        const refreshToken = jwt.sign(
+            { id: user.id },
+            REFRESH_TOKEN_SECRET!,
+            { expiresIn: REFRESH_TOKEN_EXPIRES_IN }
+        );
+
+        return { accessToken, refreshToken };
+    }
+}
+
+export const authService = new AuthService()
