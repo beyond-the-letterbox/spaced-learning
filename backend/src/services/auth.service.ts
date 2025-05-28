@@ -80,6 +80,43 @@ export class AuthService {
     }
 
     /**
+     * Refresh token
+     * @param refreshToken - The user's refresh token
+     * @returns Promise with new access token
+     * @throws Will throw if user is not found
+     * @description This method will refresh the token of the user.
+     * It will return a new token if the user is found and the token is valid.
+     * If the user is not found or the token is invalid, it will throw an error.
+     */
+    public async refreshToken(refreshToken: string): Promise<{ accessToken: string}> {
+        try {
+            const payload = jwt.verify(refreshToken, REFRESH_TOKEN_SECRET) as { id: number };
+
+            const user = await this.#prisma.users.findUnique({ where: { id: payload.id } });
+
+            if (!user) {
+                return Promise.reject(new Error('User not found'));
+            }
+
+            const accessToken = jwt.sign(
+                { id: user.id },
+                JWT_SECRET,
+                { expiresIn: JWT_EXPIRES_IN }
+            );
+
+            return { accessToken };
+        } catch (error: any) {
+            console.error('Error refreshing token:', error);
+            throw error;
+        }
+    }
+
+    public async logout(refreshToken: string): Promise<void> {
+        return;
+    }
+
+
+    /**
      * Get user by ID
      * @param userId - The user's ID
      * @returns Promise with the user (without password)

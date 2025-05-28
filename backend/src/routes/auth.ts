@@ -35,17 +35,44 @@ router.post('/login', async (req, res) => {
 });
 
 router.post('/refresh', async (req, res) => {
-  // Do something
+    try {
+        const { refreshToken } = req.body;
+
+        if (!refreshToken) {
+            res.status(400).json({ error: 'Refresh token is required' });
+        }
+
+        const accessToken = await authService.refreshToken(refreshToken);
+
+        res.json({ accessToken });
+    } catch (error: any) {
+        console.error('Error refreshing token:', error);
+        res.status(403).json({ error: error.message || 'Invalid refresh token' });
+
+    }
 });
 
 router.post('/logout', async (req, res) => {
-  // Do something
+    try {
+        const { refreshToken } = req.body;
+
+        if (!refreshToken) {
+            res.status(400).json({ error: 'Refresh token is required' });
+            return;
+        }
+
+        await authService.logout(refreshToken);
+
+        res.status(200).json({ message: 'Successfully logged out' });
+    } catch (error: any) {
+        console.error('Logout error:', error);
+        res.status(200).json({ message: 'Successfully logged out' });
+    }
 });
 
 
 router.get('/me', authenticateToken, async (req: any, res: Response) =>  {
     try {
-        // Write token authentication middleware to get currently logged in user (?)
         const userId = req.user.id;
 
         if (!userId) {
