@@ -1,3 +1,5 @@
+import { Request } from 'express';
+
 export interface User {
   id: number;
   email: string;
@@ -14,3 +16,7 @@ export type RegisterUserApiResponse = {
     refreshToken: string;
   };
 };
+
+export interface AuthenticatedRequest extends Request {
+  user?: { id: string; email: string };
+}

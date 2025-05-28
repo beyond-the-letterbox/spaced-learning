@@ -1,5 +1,6 @@
-import { Router } from 'express';
+import { Router, Response } from 'express';
 import { authService } from '../services';
+import {authenticateToken} from "../middleware";
 
 const router = Router();
 
@@ -42,11 +43,16 @@ router.post('/logout', async (req, res) => {
 });
 
 
-// Need to write middleware for authenticating token (?)
-router.get('/me', async (req, res) =>  {
+router.get('/me', authenticateToken, async (req: any, res: Response) =>  {
     try {
         // Write token authentication middleware to get currently logged in user (?)
-        const userId = 1;
+        const userId = req.user.id;
+
+        if (!userId) {
+            res.status(401).json({ error: 'User not authenticated' });
+            return;
+        }
+
         const user = await authService.getCurrentUser(userId);
         res.status(200).json(user);
     } catch (error: any) {
