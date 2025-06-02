@@ -18,5 +18,5 @@ export type RegisterUserApiResponse = {
 };
 
 export interface AuthenticatedRequest extends Request {
-  user?: { id: string; email: string };
+  user?: { id: number; email: string };
 }

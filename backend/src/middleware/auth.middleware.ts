@@ -1,4 +1,4 @@
-import {Response, NextFunction, RequestHandler, Request} from "express";
+import {Response, NextFunction, RequestHandler} from "express";
 import {AuthenticatedRequest} from "../models";
 import jwt from "jsonwebtoken";
 import {JWT_SECRET} from "../services/auth.config";
@@ -18,7 +18,7 @@ export const authenticateToken: RequestHandler = (req: AuthenticatedRequest, res
             res.status(403).json({ error: 'Invalid or expired token!' });
             return;
         }
-        req.user = user as { id: string, email: string };
+        req.user = user as { id: number, email: string };
         next();
     });
 }
