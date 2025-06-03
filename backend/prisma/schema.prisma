@@ -11,6 +11,8 @@ model cards {
   id             Int              @id @default(autoincrement()) @db.UnsignedInt
   note_id        Int              @db.UnsignedInt
   user_id        Int              @db.UnsignedInt
+  title          String           @db.VarChar(255)
+  description    String?          @db.Text
   due_date       DateTime?        @db.Date
   interval       Int              @default(0)
   ease_factor    Decimal          @default(2.50) @db.Decimal(5, 2)

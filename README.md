@@ -8,7 +8,7 @@ A modern, efficient learning platform that implements spaced repetition to help 
 - **Note & Card Management**: Create and organize notes and flashcards
 - **Knowledge Graph**: Visualize relationships between different concepts using a graph-based interface
 - **Review History**: Track your learning progress and review performance over time
-- **User Authentication**: Secure user accounts with email/password authentication
+- **UserModel Authentication**: Secure user accounts with email/password authentication
 
 ## Tech Stack
 
@@ -65,8 +65,8 @@ A modern, efficient learning platform that implements spaced repetition to help 
 ## Database Schema
 
 The application uses the following main entities:
-- **Users**: User accounts and authentication
-- **Notes**: User-created notes with content
+- **Users**: UserModel accounts and authentication
+- **Notes**: UserModel-created notes with content
 - **Cards**: Flashcards derived from notes for spaced repetition
 - **Edges**: Relationships between different notes
 - **Review History**: Track of card reviews and performance
