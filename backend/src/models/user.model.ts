@@ -4,7 +4,7 @@ export interface User {
   id: number;
   email: string;
   password_hash: string;
-  name: string;
+  name: string | null;
   created_at: Date;
   updated_at: Date;
 }
@@ -18,5 +18,5 @@ export type RegisterUserApiResponse = {
 };
 
 export interface AuthenticatedRequest extends Request {
-  user?: { id: number; email: string };
+  user?: Pick<User, 'id' | 'email'>;
 }

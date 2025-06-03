@@ -3,7 +3,8 @@ import db from './src/utils/database';
 import bodyParser from 'body-parser';
 
 // Routes
-import authRoutes from './src/routes/auth';
+import authRoutes from './src/routes/auth.routes';
+import cardsRoutes from './src/routes/cards.routes';
 
 db.execute('SELECT * FROM users')
   .then((result) => console.log(result))
@@ -15,6 +16,7 @@ app.use(bodyParser.json());
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/cards', cardsRoutes);
 
 app.get('/', (req, res, next) => {
   res.send('Welcome to the spaced learning project!');
