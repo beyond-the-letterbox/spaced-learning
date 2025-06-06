@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { Note } from '../models';
+import { Note, NoteCreatePayload } from '../models';
 
 export class NotesService {
   #prisma!: PrismaClient;
@@ -8,7 +8,7 @@ export class NotesService {
     this.#prisma = new PrismaClient();
   }
 
-  public async createNote(note: Note): Promise<Note> {
+  public async createNote(note: NoteCreatePayload): Promise<Note> {
     const createdNote = await this.#prisma.notes.create({
       data: note
     });
@@ -19,8 +19,6 @@ export class NotesService {
 
     return createdNote;
   }
-
-  public async;
 }
 
 export const notesService = new NotesService();
