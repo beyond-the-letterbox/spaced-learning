@@ -1,10 +1,12 @@
+import { Decimal } from "@prisma/client/runtime/library";
+
 export interface Card {
   id: number;
   note_id: number;
   user_id: number;
   title: string;
   description: string | null;
-  ease_factor: number;
+  ease_factor: Decimal;
   repetitions: number;
   interval: number;
   due_date: Date | null;
@@ -12,23 +14,6 @@ export interface Card {
   updated_at: Date;
 }
 
-export interface CardCreatePayload {
-  note_id: number;
-  user_id: number;
-  due_data?: Date | null;
-  interval?: number;
-  ease_factor?: number;
-  repetitions?: number;
-}
+export type CardCreatePayload = Omit<Card, 'id' | 'created_at' | 'updated_at'>;
 
-export interface CardUpdatePayload {
-  id: number;
-  note_id?: number;
-  user_id?: number;
-  title?: string;
-  description?: string | null;
-  ease_factor?: number;
-  repetitions?: number;
-  interval?: number;
-  due_date?: Date | null;
-}
+export type CardUpdatePayload = Omit<Card, 'created_at' | 'updated_at'>;

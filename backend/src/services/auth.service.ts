@@ -38,13 +38,13 @@ export class AuthService {
     }
 
     const hashedPassword = await this.hashPassword(password);
-    const user = (await this.#prisma.users.create({
+    const user = await this.#prisma.users.create({
       data: {
         email,
         password_hash: hashedPassword,
         name: name || email.split('@')[0]
       }
-    }));
+    });
     const { password_hash, ...userWithoutPassword } = user;
     const tokens = this.generateTokens(user);
 
@@ -62,7 +62,7 @@ export class AuthService {
    * @throws Will throw if email is not found or password is invalid
    */
   public async login(email: string, password: string): Promise<RegisterUserApiResponse> {
-    const user = (await this.#prisma.users.findUnique({ where: { email } }));
+    const user = await this.#prisma.users.findUnique({ where: { email } });
 
     if (!user) {
       throw new Error('Invalid email or password');
@@ -122,7 +122,7 @@ export class AuthService {
    * @throws Will throw if user is not found
    */
   public async getCurrentUser(userId: number): Promise<User> {
-    const user = (await this.#prisma.users.findUnique({ where: { id: userId } }));
+    const user = await this.#prisma.users.findUnique({ where: { id: userId } });
 
     if (!user) {
       throw new Error('User not found');
