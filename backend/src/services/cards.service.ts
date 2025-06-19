@@ -1,6 +1,5 @@
 import { PrismaClient } from '@prisma/client';
 import { Card, CardUpdatePayload, CardCreatePayload, User } from '../models';
-import cardsRoutes from '../routes/cards.routes';
 
 export class CardsService {
   #prisma!: PrismaClient;
@@ -20,7 +19,7 @@ export class CardsService {
       throw new Error('No cards found');
     }
 
-    return cards as unknown as Card[];
+    return cards;
   }
 
   public async createCard(userId: User['id'], card: CardCreatePayload): Promise<Card> {
@@ -35,50 +34,53 @@ export class CardsService {
       throw new Error('Failed to create card');
     }
 
-    return createdCard as unknown as Card;
+    return createdCard;
   }
 
-  public async updateCard(cardId: number, data: CardUpdatePayload): Promise<Card> {
+  public async updateCard(userId: User['id'], cardId: number, data: CardUpdatePayload): Promise<Card> {
     const card = await this.#prisma.cards.update({
       where: {
-        id: cardId
+        id: cardId,
+        user_id: userId
       },
       data
     });
 
     if (!card) {
-      throw new Error('Card not found');
+      throw new Error('Card not found or user has no permission to update it');
     }
 
-    return card as unknown as Card;
+    return card;
   }
 
-  public async deleteCard(cardId: number): Promise<Card> {
+  public async deleteCard(userId: User['id'], cardId: number): Promise<Card> {
     const card = await this.#prisma.cards.delete({
       where: {
-        id: cardId
+        id: cardId,
+        user_id: userId
       }
     });
 
     if (!card) {
-      throw new Error('Card not found');
+      throw new Error('Card not found or user has no permission to delete it');
     }
 
-    return card as unknown as Card;
+    return card;
   }
 
-  public async getCardById(cardId: number): Promise<Card> {
+  public async getCardById(userId: User['id'], cardId: number): Promise<Card> {
     const card = await this.#prisma.cards.findUnique({
       where: {
-        id: cardId
+        id: cardId,
+        user_id: userId
       }
     });
 
     if (!card) {
-      throw new Error('Card not found');
+      throw new Error('Card not found or user has no permission to view it');
     }
 
-    return card as unknown as Card;
+    return card;
   }
 }
 

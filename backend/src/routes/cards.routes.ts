@@ -6,9 +6,9 @@ const router = Router();
 
 router.get('/', authenticateToken, cardsController.getCards);
 
-router.post('/', authenticateToken, cardsController.createCard);
-
 router.get('/:id', authenticateToken, cardsController.getCardById);
+
+router.post('/', authenticateToken, cardsController.createCard);
 
 router.put('/:id', authenticateToken, cardsController.updateCard);
 

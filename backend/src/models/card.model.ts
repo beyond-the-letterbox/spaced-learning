@@ -1,10 +1,12 @@
+import { Decimal } from "@prisma/client/runtime/library";
+
 export interface Card {
   id: number;
   note_id: number;
   user_id: number;
   title: string;
   description: string | null;
-  ease_factor: number;
+  ease_factor: Decimal;
   repetitions: number;
   interval: number;
   due_date: Date | null;

@@ -13,7 +13,7 @@ export class CardsController {
 
       const cards = await cardsService.getCardsByUserId(userId);
 
-      res.json(cards);
+      res.status(200).json(cards);
     } catch (error) {
       res.status(500).json({ error: 'Failed to fetch cards' });
     }
@@ -50,6 +50,7 @@ export class CardsController {
 
       const card = req.body;
       const newCard = await cardsService.createCard(userId, card);
+
       res.status(201).json(newCard);
     } catch (error) {
       res.status(500).json({ error: 'Failed to create card' });
@@ -66,7 +67,7 @@ export class CardsController {
 
       const cardId = parseInt(req.params.id, 10);
       const updatedCard = req.body;
-      const card = await cardsService.updateCard(cardId, updatedCard);
+      const card = await cardsService.updateCard(userId,cardId, updatedCard);
 
       if (!card) {
         res.status(404).json({ error: 'Card not found' });
@@ -87,7 +88,7 @@ export class CardsController {
       }
 
       const cardId = parseInt(req.params.id, 10);
-      const card = await cardsService.deleteCard(cardId);
+      const card = await cardsService.deleteCard(userId, cardId);
 
       if (!card) {
         res.status(404).json({ error: 'Card not found' });

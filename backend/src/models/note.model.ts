@@ -13,3 +13,5 @@ export interface Note {
 }
 
 export type NoteCreatePayload = Omit<Note, 'id' | 'created_at' | 'updated_at'>;
+
+export type NoteUpdatePayload = Omit<Note, 'created_at' | 'updated_at'>;
