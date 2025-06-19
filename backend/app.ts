@@ -1,5 +1,5 @@
 import express from 'express';
-import db from './src/utils/database';
+import db from './src/utils/database.utils';
 import bodyParser from 'body-parser';
 
 // Routes

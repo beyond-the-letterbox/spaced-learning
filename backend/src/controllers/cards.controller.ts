@@ -1,38 +1,40 @@
 import { AuthenticatedRequest } from '../models';
 import { Response, Request } from 'express';
 import { cardsService } from '../services';
+import { BaseController } from '.';
 
-export class CardsController {
+export class CardsController extends BaseController {
   public async getCards(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      const userId = req.user?.id;
+      const userId = this.extractAuthenticatedUserId(req, res);
 
       if (!userId) {
-        return Promise.reject(new Error('User not authenticated'));
+        return;
       }
 
       const cards = await cardsService.getCardsByUserId(userId);
 
       res.status(200).json(cards);
     } catch (error) {
-      res.status(500).json({ error: 'Failed to fetch cards' });
+      res.status(500).json({ error: 'Internal server error' });
     }
   }
 
   public async getCardById(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      const userId = req.user?.id;
+      const userId = this.extractAuthenticatedUserId(req, res);
 
       if (!userId) {
-        return Promise.reject(new Error('User not authenticated'));
+        return;
       }
 
-      const cardId = parseInt(req.params.id, 10);
+      const cardId = this.getValidatedParameterValue(req, res);
+
+      if (!cardId) {
+        return;
+      }
+
       const card = await cardsService.getCardById(userId, cardId);
-
-      if (!card) {
-        res.status(404).json({ error: 'Card not found' });
-      }
 
       res.status(200).json(card);
     } catch (error) {
@@ -42,38 +44,39 @@ export class CardsController {
 
   public async createCard(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      const userId = req.user?.id;
+      const userId = this.extractAuthenticatedUserId(req, res);
 
       if (!userId) {
-        return Promise.reject(new Error('User not authenticated'));
+        return;
       }
 
       const card = req.body;
       const newCard = await cardsService.createCard(userId, card);
 
-      res.status(201).json(newCard);
+      res.status(201).json({ message: 'Card created successfully', card: newCard });
     } catch (error) {
-      res.status(500).json({ error: 'Failed to create card' });
+      res.status(500).json({ error: 'Invalid server error' });
     }
   }
 
   public async updateCard(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      const userId = req.user?.id;
+      const userId = this.extractAuthenticatedUserId(req, res);
 
       if (!userId) {
-        return Promise.reject(new Error('User not authenticated'));
+        return;
       }
 
-      const cardId = parseInt(req.params.id, 10);
+      const cardId = this.getValidatedParameterValue(req, res);
+
+      if (!cardId) {
+        return;
+      }
+
       const updatedCard = req.body;
       const card = await cardsService.updateCard(userId,cardId, updatedCard);
 
-      if (!card) {
-        res.status(404).json({ error: 'Card not found' });
-      }
-
-      res.status(200).json({ message: 'Card updated successfully' });
+      res.status(200).json({ message: 'Card updated successfully', card });
     } catch (error) {
       res.status(500).json({ error: 'Internal server error' });
     }
@@ -81,20 +84,21 @@ export class CardsController {
 
   public async deleteCard(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      const userId = req.user?.id;
+      const userId = this.extractAuthenticatedUserId(req, res);
 
       if (!userId) {
-        return Promise.reject(new Error('User not authenticated'));
+        return;
       }
 
-      const cardId = parseInt(req.params.id, 10);
-      const card = await cardsService.deleteCard(userId, cardId);
+      const cardId = this.getValidatedParameterValue(req, res);
 
-      if (!card) {
-        res.status(404).json({ error: 'Card not found' });
+      if (!cardId) {
+        return;
       }
 
-      res.status(200).json({ message: 'Card deleted successfully' });
+      const deletedCard = await cardsService.deleteCard(userId, cardId);
+
+      res.status(200).json({message: 'Card deleted successfully', card: deletedCard});
     } catch (error) {
       res.status(500).json({ error: 'Internal server error' });
     }
