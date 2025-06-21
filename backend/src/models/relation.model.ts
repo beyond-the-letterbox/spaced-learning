@@ -1,16 +1,42 @@
+import { Prisma } from "@prisma/client";
 import {Note} from "./note.model";
+
+export interface RelationType {
+    id: number;
+    type: RelationTypeEnum;
+    created_at: Date;
+}
 
 export interface Relation {
     id: number;
     user_id: number;
-    from_note_id: number;
-    to_node_id: number;
-    relation_type: string;
+    source_note_id: number;
+    target_note_id: number;
+    relation_types: RelationType[];
     created_at: Date;
-    from_note?: Note;
-    to_note?: Note;
+    source_note?: Note;
+    target_note?: Note;
 }
 
-export type RelationCreatePayload = Omit<Relation, 'id' | 'created_at' | 'updated_at'>;
+export type RelationWithIncludes = Prisma.relationsGetPayload<{
+    include: {
+        source_note: true;
+        target_note: true;
+        relation_types: true;
+    };
+}>;
 
-export type RelationUpdatePayload = Omit<Relation, 'user_id' | 'from_note_id' | 'to_note_id'>;
+export type RelationCreatePayload = Omit<Relation, 'id' | 'created_at' | 'updated_at' | 'source_note' | 'target_note'>;
+
+export type RelationUpdatePayload = Omit<Relation, 'user_id' | 'source_note_id' | 'target_note_id'>;
+
+export enum RelationTypeEnum {
+    ParentChild = "parent_child",
+    DependsOn = "depends_on",
+    Linked = "linked",
+    Reference = "reference",
+    ExampleOf = "example_of",
+    Contradicts = "contradicts",
+    Supports = "supports",
+    Custom = "custom"
+}
