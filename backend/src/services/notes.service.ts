@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
-import {Note, NoteCreatePayload, NoteUpdatePayload, User} from '../models';
+import {Note, NoteCreatePayload, NoteUpdatePayload, Relation, User} from '../models';
+import {relationsService} from "./relations.service";
 
 export class NotesService {
   #prisma!: PrismaClient;

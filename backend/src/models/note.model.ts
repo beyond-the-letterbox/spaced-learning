@@ -9,7 +9,7 @@ export interface Note {
   updated_at: Date;
   cards?: Card[];
   users?: User[];
-  edges?: any[];
+  relations?: any[];
 }
 
 export type NoteCreatePayload = Omit<Note, 'id' | 'created_at' | 'updated_at'>;

@@ -8,6 +8,10 @@ router.get('/', authenticateToken, relationsController.getRelations);
 
 router.get('/:id', authenticateToken, relationsController.getRelationById);
 
+router.get('/type/:type', authenticateToken, relationsController.getRelationsByType);
+
+router.get('/note/:id', authenticateToken, relationsController.getRelationsByNoteId);
+
 router.post('/',  authenticateToken, relationsController.createRelation);
 
 router.put('/:id', authenticateToken, relationsController.updateRelation);
