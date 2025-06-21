@@ -14,6 +14,7 @@ export interface Relation {
     target_note_id: number;
     relation_types: RelationType[];
     created_at: Date;
+    updated_at?: Date;
     source_note?: Note;
     target_note?: Note;
 }
@@ -28,7 +29,7 @@ export type RelationWithIncludes = Prisma.relationsGetPayload<{
 
 export type RelationCreatePayload = Omit<Relation, 'id' | 'created_at' | 'updated_at' | 'source_note' | 'target_note'>;
 
-export type RelationUpdatePayload = Omit<Relation, 'user_id' | 'source_note_id' | 'target_note_id'>;
+export type RelationUpdatePayload = Omit<Relation, 'created_at' | 'updated_at' | 'source_note' | 'target_note'>;
 
 export enum RelationTypeEnum {
     ParentChild = "parent_child",
