@@ -33,6 +33,28 @@ export class RelationsService {
         return relations.map(relation => this.mapToRelation(relation));
     }
 
+    public async getRelationsByType(userId: User['id'], relationType: RelationTypeEnum): Promise<Relation[]> {
+        const relations = await this.#prisma.relations.findMany({
+            where: {
+                user_id: userId,
+                relation_types: {
+                    some: {
+                        type: {
+                            equals: relationType
+                        }
+                    }
+                }
+            },
+            include: {
+                source_note: true,
+                target_note: true,
+                relation_types: true
+            }
+        })
+
+        return relations.map(relation => this.mapToRelation(relation));
+    }
+
     public async getRelationById(userId: User['id'], relationId: number): Promise<Relation> {
         const relation = await this.#prisma.relations.findUnique({
             where: {
@@ -51,6 +73,33 @@ export class RelationsService {
         }
 
         return this.mapToRelation(relation);
+    }
+
+    public async getRelationsByNoteId(userId: User['id'], noteId: number): Promise<Relation[]> {
+        const relations = await this.#prisma.relations.findMany({
+            where: {
+                user_id: userId,
+                OR: [
+                    {
+                        source_note_id: noteId
+                    },
+                    {
+                        target_note_id: noteId
+                    }
+                ]
+            },
+            include: {
+                source_note: true,
+                target_note: true,
+                relation_types: true
+            }
+        });
+
+        if (!relations || relations.length === 0) {
+            throw new Error('No relations found for this note');
+        }
+
+        return relations.map(relation => relationsService.mapToRelation(relation));
     }
 
     public async createRelation(userId: User['id'], relation: RelationCreatePayload): Promise<Relation> {
