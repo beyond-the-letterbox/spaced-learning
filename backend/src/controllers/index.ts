@@ -3,3 +3,4 @@ export * from './cards.controller';
 export * from './notes.controller';
 export * from './relations.controller';
 export * from './base.controller';
+export * from './review-history.controller';

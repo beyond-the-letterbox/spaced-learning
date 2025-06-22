@@ -53,8 +53,7 @@ export class CardsController extends BaseController {
       const cards = await cardsService.getCardsForReview(userId);
 
       res.status(200).json(cards);
-    }
-    catch (error) {
+    } catch (error) {
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -76,15 +75,14 @@ export class CardsController extends BaseController {
       const reviewRating = req.body;
 
       if (!reviewRating) {
-        res.status(400).json({error: 'Review rating is required'});
-        return
+        res.status(400).json({ error: 'Review rating is required' });
+        return;
       }
 
       const reviewedCard = await cardsService.processCardReview(userId, cardId, reviewRating);
 
       res.status(200).json({ message: 'Card reviewed successfully', card: reviewedCard });
-    }
-    catch (error) {
+    } catch (error) {
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -121,7 +119,7 @@ export class CardsController extends BaseController {
       }
 
       const updatedCard = req.body;
-      const card = await cardsService.updateCard(userId,cardId, updatedCard);
+      const card = await cardsService.updateCard(userId, cardId, updatedCard);
 
       res.status(200).json({ message: 'Card updated successfully', card });
     } catch (error) {
@@ -145,7 +143,7 @@ export class CardsController extends BaseController {
 
       const deletedCard = await cardsService.deleteCard(userId, cardId);
 
-      res.status(200).json({message: 'Card deleted successfully', card: deletedCard});
+      res.status(200).json({ message: 'Card deleted successfully', card: deletedCard });
     } catch (error) {
       res.status(500).json({ error: 'Internal server error' });
     }
