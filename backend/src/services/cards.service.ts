@@ -1,5 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 import { Card, CardUpdatePayload, CardCreatePayload, User } from '../models';
+import { Decimal } from '@prisma/client/runtime/library';
+
+const DAY_IN_MS = 1000 * 60 * 60 * 24;
 
 export class CardsService {
   #prisma!: PrismaClient;
@@ -20,6 +23,79 @@ export class CardsService {
     }
 
     return cards;
+  }
+
+  public async getCardById(userId: User['id'], cardId: number): Promise<Card> {
+    const card = await this.#prisma.cards.findUnique({
+      where: {
+        id: cardId,
+        user_id: userId
+      }
+    });
+
+    if (!card) {
+      throw new Error('Card not found or user has no permission to view it');
+    }
+
+    return card;
+  }
+
+  public async getCardsForReview(userId: User['id']): Promise<Card[]> {
+    const now = new Date();
+
+    const cards = await this.#prisma.cards.findMany({
+      where: {
+        user_id: userId,
+        OR: [
+          { due_date: { lte: now }},
+          // Include new cards without due_date set yet
+          { due_date: null}
+        ]
+      },
+      orderBy: {
+        // Show the oldest due cards first
+        due_date: 'asc'
+      }
+    });
+
+    if (!cards || cards.length === 0) {
+      throw new Error('No cards found');
+    }
+
+    return cards;
+  }
+
+  public async processCardReview(userId: User['id'], cardId: Card['id'], reviewRating: number): Promise<Card> {
+    const card = await this.#prisma.cards.findUnique({
+      where: {
+        id: cardId,
+        user_id: userId
+      }
+    });
+
+    if (!card) {
+      throw new Error('Card not found or user has no permission to view it');
+    }
+
+    const reviewedCard = this.getReviewedCard(card, reviewRating);
+    const updatedCard = this.calculateNextReviewDate(reviewedCard);
+
+    const savedCard = await this.#prisma.cards.update({
+      where: {
+        id: cardId,
+        user_id: userId
+      },
+      data: {
+        ...updatedCard,
+        updated_at: new Date()
+      }
+    });
+
+    if (!savedCard) {
+      throw new Error('Failed to update card');
+    }
+
+    return savedCard;
   }
 
   public async createCard(userId: User['id'], card: CardCreatePayload): Promise<Card> {
@@ -68,19 +144,33 @@ export class CardsService {
     return card;
   }
 
-  public async getCardById(userId: User['id'], cardId: number): Promise<Card> {
-    const card = await this.#prisma.cards.findUnique({
-      where: {
-        id: cardId,
-        user_id: userId
-      }
-    });
+  private getReviewedCard(card: Card, reviewRating: number): Card {
+    const { ease_factor, repetitions, interval } = card;
 
-    if (!card) {
-      throw new Error('Card not found or user has no permission to view it');
+    // Possible review rating 1-5
+    if (reviewRating >= 3) {
+      return {
+        ...card,
+        interval: repetitions === 0 ? 1 : (repetitions === 1 ? 6 : Math.round(interval * Number(ease_factor))),
+        repetitions: repetitions + 1,
+        ease_factor: Math.max(1.3, Number(ease_factor) + (0.1 - (5 - reviewRating) * (0.08 + (5 - reviewRating) * 0.02))) as unknown as Decimal,
+      }
     }
 
-    return card;
+    return {
+      ...card,
+      repetitions: 0,
+      interval: 1
+    }
+  }
+
+  private calculateNextReviewDate(card: Card): Card {
+    const { interval, due_date } = card;
+
+    return {
+      ...card,
+      due_date: new Date(Date.now() + interval * DAY_IN_MS)
+    }
   }
 }
 

@@ -42,6 +42,53 @@ export class CardsController extends BaseController {
     }
   }
 
+  public async getCardsForReview(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const userId = this.extractAuthenticatedUserId(req, res);
+
+      if (!userId) {
+        return;
+      }
+
+      const cards = await cardsService.getCardsForReview(userId);
+
+      res.status(200).json(cards);
+    }
+    catch (error) {
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+
+  public async processCardReview(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const userId = this.extractAuthenticatedUserId(req, res);
+
+      if (!userId) {
+        return;
+      }
+
+      const cardId = this.getValidatedParameterValue(req, res);
+
+      if (!cardId) {
+        return;
+      }
+
+      const reviewRating = req.body;
+
+      if (!reviewRating) {
+        res.status(400).json({error: 'Review rating is required'});
+        return
+      }
+
+      const reviewedCard = await cardsService.processCardReview(userId, cardId, reviewRating);
+
+      res.status(200).json({ message: 'Card reviewed successfully', card: reviewedCard });
+    }
+    catch (error) {
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+
   public async createCard(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
       const userId = this.extractAuthenticatedUserId(req, res);
