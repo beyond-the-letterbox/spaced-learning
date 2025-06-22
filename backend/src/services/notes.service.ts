@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
-import {Note, NoteCreatePayload, NoteUpdatePayload, Relation, User} from '../models';
-import {relationsService} from "./relations.service";
+import { Note, NoteCreatePayload, NoteUpdatePayload, Relation, User } from '../models';
+import { relationsService } from './relations.service';
 
 export class NotesService {
   #prisma!: PrismaClient;
@@ -14,7 +14,7 @@ export class NotesService {
       where: {
         user_id: userId
       }
-    })
+    });
 
     if (!notes) {
       throw new Error('No notes found');
@@ -54,7 +54,11 @@ export class NotesService {
     return createdNote;
   }
 
-  public async updateNote(userId: User['id'], noteId: number, data: NoteUpdatePayload): Promise<Note> {
+  public async updateNote(
+    userId: User['id'],
+    noteId: number,
+    data: NoteUpdatePayload
+  ): Promise<Note> {
     const updatedNote = await this.#prisma.notes.update({
       where: {
         id: noteId,

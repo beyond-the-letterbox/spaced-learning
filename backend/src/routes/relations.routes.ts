@@ -1,6 +1,6 @@
-import {Router} from "express";
-import {authenticateToken} from "../middleware";
-import {relationsController} from "../controllers";
+import { Router } from 'express';
+import { authenticateToken } from '../middleware';
+import { relationsController } from '../controllers';
 
 const router = Router();
 
@@ -12,7 +12,7 @@ router.get('/type/:type', authenticateToken, relationsController.getRelationsByT
 
 router.get('/note/:id', authenticateToken, relationsController.getRelationsByNoteId);
 
-router.post('/',  authenticateToken, relationsController.createRelation);
+router.post('/', authenticateToken, relationsController.createRelation);
 
 router.put('/:id', authenticateToken, relationsController.updateRelation);
 
