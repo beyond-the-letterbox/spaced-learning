@@ -1,7 +1,7 @@
 import { AuthenticatedRequest } from '../models';
 import { Response, Request } from 'express';
 import { cardsService } from '../services';
-import { BaseController } from '.';
+import { BaseController } from './base.controller';
 
 export class CardsController extends BaseController {
   public async getCards(req: AuthenticatedRequest, res: Response): Promise<void> {
