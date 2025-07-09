@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { authenticateToken } from '../middleware';
 import { reviewHistoryController } from '../controllers';
+import validate from '../middleware/validate.middleware';
+import { getReviewHistoryByCardIdSchema, getReviewsSchema } from '../../schemas';
 
 /**
  * @swagger
@@ -63,7 +65,7 @@ import { reviewHistoryController } from '../controllers';
  *         nextReviewDate: 2023-05-02T12:00:00Z
  *         createdAt: 2023-05-01T12:00:00Z
  *         updatedAt: 2023-05-01T12:00:00Z
- * 
+ *
  *     CreateReviewInput:
  *       type: object
  *       required:
@@ -96,7 +98,7 @@ import { reviewHistoryController } from '../controllers';
  *         interval: 1
  *         repetitions: 0
  *         nextReviewDate: 2023-05-02T12:00:00Z
- * 
+ *
  *   securitySchemes:
  *     bearerAuth:
  *       type: http
@@ -143,7 +145,12 @@ const router = Router();
  *       500:
  *         description: Internal server error
  */
-router.get('/reviews', authenticateToken, reviewHistoryController.getReviews);
+router.get(
+  '/reviews',
+  authenticateToken,
+  validate(getReviewsSchema),
+  reviewHistoryController.getReviews
+);
 
 /**
  * @swagger
@@ -190,6 +197,11 @@ router.get('/reviews', authenticateToken, reviewHistoryController.getReviews);
  *       500:
  *         description: Internal server error
  */
-router.get('/reviews/card/:id', authenticateToken, reviewHistoryController.getReviewsByCardId);
+router.get(
+  '/reviews/card/:id',
+  authenticateToken,
+  validate(getReviewHistoryByCardIdSchema),
+  reviewHistoryController.getReviewsByCardId
+);
 
 export default router;

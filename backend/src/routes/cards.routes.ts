@@ -1,6 +1,16 @@
 import { Router } from 'express';
 import { cardsController } from '../controllers';
 import { authenticateToken } from '../middleware';
+import {
+  createCardSchema,
+  deleteCardSchema,
+  getCardByIdSchema,
+  getCardsForReviewSchema,
+  getCardsSchema,
+  processCardReviewSchema,
+  updateCardSchema
+} from '../../schemas';
+import validate from '../middleware/validate.middleware';
 
 const router = Router();
 
@@ -22,7 +32,7 @@ const router = Router();
  *               items:
  *                 $ref: '#/components/schemas/Card'
  */
-router.get('/', authenticateToken, cardsController.getCards);
+router.get('/', authenticateToken, validate(getCardsSchema), cardsController.getCards);
 
 /**
  * @swagger
@@ -42,7 +52,12 @@ router.get('/', authenticateToken, cardsController.getCards);
  *               items:
  *                 $ref: '#/components/schemas/Card'
  */
-router.get('/review', authenticateToken, cardsController.getCardsForReview);
+router.get(
+  '/review',
+  authenticateToken,
+  validate(getCardsForReviewSchema),
+  cardsController.getCardsForReview
+);
 
 /**
  * @swagger
@@ -67,7 +82,7 @@ router.get('/review', authenticateToken, cardsController.getCardsForReview);
  *             schema:
  *               $ref: '#/components/schemas/Card'
  */
-router.get('/:id', authenticateToken, cardsController.getCardById);
+router.get('/:id', authenticateToken, validate(getCardByIdSchema), cardsController.getCardById);
 
 /**
  * @swagger
@@ -91,7 +106,7 @@ router.get('/:id', authenticateToken, cardsController.getCardById);
  *             schema:
  *               $ref: '#/components/schemas/Card'
  */
-router.post('/', authenticateToken, cardsController.createCard);
+router.post('/', authenticateToken, validate(createCardSchema), cardsController.createCard);
 
 /**
  * @swagger
@@ -122,7 +137,7 @@ router.post('/', authenticateToken, cardsController.createCard);
  *             schema:
  *               $ref: '#/components/schemas/Card'
  */
-router.put('/:id', authenticateToken, cardsController.updateCard);
+router.put('/:id', authenticateToken, validate(updateCardSchema), cardsController.updateCard);
 
 /**
  * @swagger
@@ -159,7 +174,12 @@ router.put('/:id', authenticateToken, cardsController.updateCard);
  *             schema:
  *               $ref: '#/components/schemas/Card'
  */
-router.put('/:id/review', authenticateToken, cardsController.processCardReview);
+router.put(
+  '/:id/review',
+  authenticateToken,
+  validate(processCardReviewSchema),
+  cardsController.processCardReview
+);
 
 /**
  * @swagger
@@ -182,6 +202,6 @@ router.put('/:id/review', authenticateToken, cardsController.processCardReview);
  *       404:
  *         description: Card not found
  */
-router.delete('/:id', authenticateToken, cardsController.deleteCard);
+router.delete('/:id', authenticateToken, validate(deleteCardSchema), cardsController.deleteCard);
 
 export default router;

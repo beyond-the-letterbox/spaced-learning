@@ -1,6 +1,16 @@
 import { Router } from 'express';
 import { authenticateToken } from '../middleware';
 import { relationsController } from '../controllers';
+import validate from '../middleware/validate.middleware';
+import {
+  createRelationSchema,
+  deleteRelationSchema,
+  getRelationByIdSchema,
+  getRelationsByNoteId,
+  getRelationsByTypeSchema,
+  getRelationsSchema,
+  updateRelationSchema
+} from '../../schemas';
 
 /**
  * @swagger
@@ -44,7 +54,7 @@ import { relationsController } from '../controllers';
  *         metadata: {}
  *         createdAt: 2023-05-01T12:00:00Z
  *         updatedAt: 2023-05-01T12:00:00Z
- * 
+ *
  *     CreateRelationInput:
  *       type: object
  *       required:
@@ -69,7 +79,7 @@ import { relationsController } from '../controllers';
  *         targetId: 60d21b4667d0d8992e610c84
  *         type: "references"
  *         metadata: {}
- * 
+ *
  *     UpdateRelationInput:
  *       type: object
  *       properties:
@@ -82,7 +92,7 @@ import { relationsController } from '../controllers';
  *       example:
  *         type: "updated_reference"
  *         metadata: { updated: true }
- * 
+ *
  *   securitySchemes:
  *     bearerAuth:
  *       type: http
@@ -114,7 +124,7 @@ const router = Router();
  *       500:
  *         description: Internal server error
  */
-router.get('/', authenticateToken, relationsController.getRelations);
+router.get('/', authenticateToken, validate(getRelationsSchema), relationsController.getRelations);
 
 /**
  * @swagger
@@ -145,7 +155,12 @@ router.get('/', authenticateToken, relationsController.getRelations);
  *       500:
  *         description: Internal server error
  */
-router.get('/:id', authenticateToken, relationsController.getRelationById);
+router.get(
+  '/:id',
+  authenticateToken,
+  validate(getRelationByIdSchema),
+  relationsController.getRelationById
+);
 
 /**
  * @swagger
@@ -176,7 +191,12 @@ router.get('/:id', authenticateToken, relationsController.getRelationById);
  *       500:
  *         description: Internal server error
  */
-router.get('/type/:type', authenticateToken, relationsController.getRelationsByType);
+router.get(
+  '/type/:type',
+  authenticateToken,
+  validate(getRelationsByTypeSchema),
+  relationsController.getRelationsByType
+);
 
 /**
  * @swagger
@@ -209,7 +229,12 @@ router.get('/type/:type', authenticateToken, relationsController.getRelationsByT
  *       500:
  *         description: Internal server error
  */
-router.get('/note/:id', authenticateToken, relationsController.getRelationsByNoteId);
+router.get(
+  '/note/:id',
+  authenticateToken,
+  validate(getRelationsByNoteId),
+  relationsController.getRelationsByNoteId
+);
 
 /**
  * @swagger
@@ -241,7 +266,12 @@ router.get('/note/:id', authenticateToken, relationsController.getRelationsByNot
  *       500:
  *         description: Internal server error
  */
-router.post('/', authenticateToken, relationsController.createRelation);
+router.post(
+  '/',
+  authenticateToken,
+  validate(createRelationSchema),
+  relationsController.createRelation
+);
 
 /**
  * @swagger
@@ -282,7 +312,12 @@ router.post('/', authenticateToken, relationsController.createRelation);
  *       500:
  *         description: Internal server error
  */
-router.put('/:id', authenticateToken, relationsController.updateRelation);
+router.put(
+  '/:id',
+  authenticateToken,
+  validate(updateRelationSchema),
+  relationsController.updateRelation
+);
 
 /**
  * @swagger
@@ -311,6 +346,11 @@ router.put('/:id', authenticateToken, relationsController.updateRelation);
  *       500:
  *         description: Internal server error
  */
-router.delete('/:id', authenticateToken, relationsController.deleteRelation);
+router.delete(
+  '/:id',
+  authenticateToken,
+  validate(deleteRelationSchema),
+  relationsController.deleteRelation
+);
 
 export default router;

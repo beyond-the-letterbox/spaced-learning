@@ -10,7 +10,7 @@ import cardsRoutes from './routes/cards.routes';
 import notesRoutes from './routes/notes.routes';
 import relationsRoutes from './routes/relations.routes';
 import reviewHistoryRoutes from './routes/review-history.routes';
-import {swaggerOptions} from "./config";
+import { swaggerOptions } from './config';
 
 const specs = swaggerJsdoc(swaggerOptions);
 
@@ -37,7 +37,7 @@ app.get('/', (req, res, next) => {
     status: 'OK',
     message: 'Welcome to spaced learning project',
     documentation: '/api/docs',
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 });
 
