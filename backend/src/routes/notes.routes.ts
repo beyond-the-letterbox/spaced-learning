@@ -1,6 +1,12 @@
 import { Router } from 'express';
 import { authenticateToken } from '../middleware';
 import { notesController } from '../controllers';
+import validate from '../middleware/validate.middleware';
+import {
+  createNoteSchema, deleteNoteSchema,
+  getNoteByIdSchema,
+  getNotesSchema, updateNoteSchema
+} from '../../schemas';
 
 /**
  * @swagger
@@ -13,7 +19,7 @@ import { notesController } from '../controllers';
  *         - content
  *       properties:
  *         id:
- *           type: string
+ *           type: number
  *           description: The auto-generated ID of the note
  *         title:
  *           type: string
@@ -39,7 +45,7 @@ import { notesController } from '../controllers';
  *         userId: 60d21b4667d0d8992e610c84
  *         createdAt: 2023-05-01T12:00:00Z
  *         updatedAt: 2023-05-01T12:00:00Z
- * 
+ *
  *     CreateNoteInput:
  *       type: object
  *       required:
@@ -58,7 +64,7 @@ import { notesController } from '../controllers';
  *       example:
  *         title: My First Note
  *         content: This is my first note content
- * 
+ *
  *     UpdateNoteInput:
  *       type: object
  *       properties:
@@ -74,7 +80,7 @@ import { notesController } from '../controllers';
  *       example:
  *         title: Updated Note Title
  *         content: This is the updated content
- * 
+ *
  *   securitySchemes:
  *     bearerAuth:
  *       type: http
@@ -106,7 +112,7 @@ const router = Router();
  *       500:
  *         description: Internal server error
  */
-router.get('/', authenticateToken, notesController.getNotes);
+router.get('/', authenticateToken, validate(getNotesSchema), notesController.getNotes);
 
 /**
  * @swagger
@@ -137,7 +143,7 @@ router.get('/', authenticateToken, notesController.getNotes);
  *       500:
  *         description: Internal server error
  */
-router.get('/:id', authenticateToken, notesController.getNoteById);
+router.get('/:id', authenticateToken, validate(getNoteByIdSchema), notesController.getNoteById);
 
 /**
  * @swagger
@@ -167,7 +173,7 @@ router.get('/:id', authenticateToken, notesController.getNoteById);
  *       500:
  *         description: Internal server error
  */
-router.post('/', authenticateToken, notesController.createNote);
+router.post('/', authenticateToken, validate(createNoteSchema), notesController.createNote);
 
 /**
  * @swagger
@@ -208,7 +214,7 @@ router.post('/', authenticateToken, notesController.createNote);
  *       500:
  *         description: Internal server error
  */
-router.put('/:id', authenticateToken, notesController.updateNote);
+router.put('/:id', authenticateToken, validate(updateNoteSchema), notesController.updateNote);
 
 /**
  * @swagger
@@ -237,6 +243,6 @@ router.put('/:id', authenticateToken, notesController.updateNote);
  *       500:
  *         description: Internal server error
  */
-router.delete('/:id', authenticateToken, notesController.deleteNote);
+router.delete('/:id', authenticateToken, validate(deleteNoteSchema), notesController.deleteNote);
 
 export default router;

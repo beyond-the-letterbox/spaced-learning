@@ -63,7 +63,7 @@ import { reviewHistoryController } from '../controllers';
  *         nextReviewDate: 2023-05-02T12:00:00Z
  *         createdAt: 2023-05-01T12:00:00Z
  *         updatedAt: 2023-05-01T12:00:00Z
- * 
+ *
  *     CreateReviewInput:
  *       type: object
  *       required:
@@ -96,7 +96,7 @@ import { reviewHistoryController } from '../controllers';
  *         interval: 1
  *         repetitions: 0
  *         nextReviewDate: 2023-05-02T12:00:00Z
- * 
+ *
  *   securitySchemes:
  *     bearerAuth:
  *       type: http

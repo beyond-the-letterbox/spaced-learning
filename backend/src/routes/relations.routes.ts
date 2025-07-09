@@ -44,7 +44,7 @@ import { relationsController } from '../controllers';
  *         metadata: {}
  *         createdAt: 2023-05-01T12:00:00Z
  *         updatedAt: 2023-05-01T12:00:00Z
- * 
+ *
  *     CreateRelationInput:
  *       type: object
  *       required:
@@ -69,7 +69,7 @@ import { relationsController } from '../controllers';
  *         targetId: 60d21b4667d0d8992e610c84
  *         type: "references"
  *         metadata: {}
- * 
+ *
  *     UpdateRelationInput:
  *       type: object
  *       properties:
@@ -82,7 +82,7 @@ import { relationsController } from '../controllers';
  *       example:
  *         type: "updated_reference"
  *         metadata: { updated: true }
- * 
+ *
  *   securitySchemes:
  *     bearerAuth:
  *       type: http

@@ -1,6 +1,7 @@
 import { Router } from 'express';
-import { authenticateToken } from '../middleware';
+import { authenticateToken, validateRequestBody } from '../middleware';
 import { authController } from '../controllers';
+import { loginSchema, registerUserSchema } from '../../schemas/auth.schema';
 
 const router = Router();
 
@@ -25,9 +26,10 @@ const router = Router();
  *                 format: email
  *               password:
  *                 type: string
- *                 minLength: 6
+ *                 minLength: 8
  *               name:
  *                 type: string
+ *                 minLength: 3
  *     responses:
  *       201:
  *         description: User registered successfully
@@ -48,7 +50,7 @@ const router = Router();
  *                     refreshToken:
  *                       type: string
  */
-router.post('/register', authController.register);
+router.post('/register', validateRequestBody(registerUserSchema), authController.register);
 
 /**
  * @swagger
@@ -71,6 +73,7 @@ router.post('/register', authController.register);
  *                 format: email
  *               password:
  *                 type: string
+ *                 minLength: 8
  *     responses:
  *       200:
  *         description: Successfully authenticated
@@ -89,7 +92,7 @@ router.post('/register', authController.register);
  *                     refreshToken:
  *                       type: string
  */
-router.post('/login', authController.login);
+router.post('/login', validateRequestBody(loginSchema), authController.login);
 
 /**
  * @swagger
