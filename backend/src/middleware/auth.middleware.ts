@@ -1,7 +1,7 @@
 import { Response, NextFunction, RequestHandler } from 'express';
 import { AuthenticatedRequest } from '../models';
 import jwt from 'jsonwebtoken';
-import { JWT_SECRET } from '../services/auth.config';
+import { JWT_SECRET } from '../config';
 
 export const authenticateToken: RequestHandler = (
   req: AuthenticatedRequest,

@@ -1,16 +1,16 @@
 import express from 'express';
-import db from './src/utils/database.utils';
+import db from './utils/database.utils';
 import bodyParser from 'body-parser';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
 // Routes
-import authRoutes from './src/routes/auth.routes';
-import cardsRoutes from './src/routes/cards.routes';
-import notesRoutes from './src/routes/notes.routes';
-import relationsRoutes from './src/routes/relations.routes';
-import reviewHistoryRoutes from './src/routes/review-history.routes';
-import {swaggerOptions} from "./src/config";
+import authRoutes from './routes/auth.routes';
+import cardsRoutes from './routes/cards.routes';
+import notesRoutes from './routes/notes.routes';
+import relationsRoutes from './routes/relations.routes';
+import reviewHistoryRoutes from './routes/review-history.routes';
+import {swaggerOptions} from "./config";
 
 const specs = swaggerJsdoc(swaggerOptions);
 
@@ -50,9 +50,4 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
   });
 });
 
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-  console.log(`API Documentation available at http://localhost:${PORT}/api-docs`);
-});
+export default app;

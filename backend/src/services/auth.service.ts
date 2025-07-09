@@ -7,7 +7,7 @@ import {
   JWT_SECRET,
   REFRESH_TOKEN_EXPIRES_IN,
   REFRESH_TOKEN_SECRET
-} from './auth.config';
+} from '../config';
 
 export class AuthService {
   #prisma!: PrismaClient;
