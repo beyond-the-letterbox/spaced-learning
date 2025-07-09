@@ -2,8 +2,10 @@ import { Router } from 'express';
 import { cardsController } from '../controllers';
 import { authenticateToken } from '../middleware';
 import {
-  createCardSchema, deleteCardSchema,
-  getCardByIdSchema, getCardsForReviewSchema,
+  createCardSchema,
+  deleteCardSchema,
+  getCardByIdSchema,
+  getCardsForReviewSchema,
   getCardsSchema,
   processCardReviewSchema,
   updateCardSchema
@@ -50,7 +52,12 @@ router.get('/', authenticateToken, validate(getCardsSchema), cardsController.get
  *               items:
  *                 $ref: '#/components/schemas/Card'
  */
-router.get('/review', authenticateToken, validate(getCardsForReviewSchema), cardsController.getCardsForReview);
+router.get(
+  '/review',
+  authenticateToken,
+  validate(getCardsForReviewSchema),
+  cardsController.getCardsForReview
+);
 
 /**
  * @swagger
@@ -167,7 +174,12 @@ router.put('/:id', authenticateToken, validate(updateCardSchema), cardsControlle
  *             schema:
  *               $ref: '#/components/schemas/Card'
  */
-router.put('/:id/review', authenticateToken, validate(processCardReviewSchema), cardsController.processCardReview);
+router.put(
+  '/:id/review',
+  authenticateToken,
+  validate(processCardReviewSchema),
+  cardsController.processCardReview
+);
 
 /**
  * @swagger

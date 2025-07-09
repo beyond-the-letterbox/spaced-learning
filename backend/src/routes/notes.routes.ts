@@ -3,9 +3,11 @@ import { authenticateToken } from '../middleware';
 import { notesController } from '../controllers';
 import validate from '../middleware/validate.middleware';
 import {
-  createNoteSchema, deleteNoteSchema,
+  createNoteSchema,
+  deleteNoteSchema,
   getNoteByIdSchema,
-  getNotesSchema, updateNoteSchema
+  getNotesSchema,
+  updateNoteSchema
 } from '../../schemas';
 
 /**

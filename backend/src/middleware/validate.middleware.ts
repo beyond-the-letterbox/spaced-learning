@@ -7,8 +7,8 @@ export default function validate(schema: AnyZodObject): RequestHandler {
     const toValidate = {
       params: req.params,
       query: req.query,
-      body: req.body,
-    }
+      body: req.body
+    };
 
     const result = schema.safeParse(toValidate);
 
@@ -19,5 +19,5 @@ export default function validate(schema: AnyZodObject): RequestHandler {
 
     Object.assign(req, result.data);
     next();
-  }
+  };
 }
