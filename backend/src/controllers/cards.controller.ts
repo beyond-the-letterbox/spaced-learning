@@ -1,4 +1,4 @@
-import { AuthenticatedRequest } from '../models';
+import { AuthenticatedRequest, CardUpdatePayload } from '../models';
 import { Response } from 'express';
 import { cardsService } from '../services';
 import { BaseController } from './base.controller';
