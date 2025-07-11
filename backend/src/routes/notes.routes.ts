@@ -9,6 +9,7 @@ import {
   getNotesSchema,
   updateNoteSchema
 } from '../../schemas';
+import { catchAsync } from '../utils';
 
 /**
  * @swagger
@@ -114,7 +115,7 @@ const router = Router();
  *       500:
  *         description: Internal server error
  */
-router.get('/', authenticateToken, validate(getNotesSchema), notesController.getNotes);
+router.get('/', authenticateToken, validate(getNotesSchema), catchAsync(notesController.getNotes));
 
 /**
  * @swagger
@@ -145,7 +146,7 @@ router.get('/', authenticateToken, validate(getNotesSchema), notesController.get
  *       500:
  *         description: Internal server error
  */
-router.get('/:id', authenticateToken, validate(getNoteByIdSchema), notesController.getNoteById);
+router.get('/:id', authenticateToken, validate(getNoteByIdSchema), catchAsync(notesController.getNoteById));
 
 /**
  * @swagger
@@ -175,7 +176,7 @@ router.get('/:id', authenticateToken, validate(getNoteByIdSchema), notesControll
  *       500:
  *         description: Internal server error
  */
-router.post('/', authenticateToken, validate(createNoteSchema), notesController.createNote);
+router.post('/', authenticateToken, validate(createNoteSchema), catchAsync(notesController.createNote));
 
 /**
  * @swagger
@@ -216,7 +217,7 @@ router.post('/', authenticateToken, validate(createNoteSchema), notesController.
  *       500:
  *         description: Internal server error
  */
-router.put('/:id', authenticateToken, validate(updateNoteSchema), notesController.updateNote);
+router.put('/:id', authenticateToken, validate(updateNoteSchema), catchAsync(notesController.updateNote));
 
 /**
  * @swagger
@@ -245,6 +246,6 @@ router.put('/:id', authenticateToken, validate(updateNoteSchema), notesControlle
  *       500:
  *         description: Internal server error
  */
-router.delete('/:id', authenticateToken, validate(deleteNoteSchema), notesController.deleteNote);
+router.delete('/:id', authenticateToken, validate(deleteNoteSchema), catchAsync(notesController.deleteNote));
 
 export default router;
