@@ -1,13 +1,18 @@
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../models';
+import { ApiError } from '../utils';
 
 export abstract class BaseController {
-  protected extractAuthenticatedUserId(req: AuthenticatedRequest, res: Response) {
+  protected extractAuthenticatedUserId(req: AuthenticatedRequest, res: Response): number  {
     const userId = req.user?.id;
 
     if (!userId) {
-      res.status(401).json({ error: 'User not authenticated' });
-      return null;
+      throw new ApiError({
+        message: 'User not authenticated',
+        code: 'UNAUTHORIZED',
+        statusCode: 401,
+        details: { userId }
+      });
     }
 
     return userId;
@@ -17,12 +22,16 @@ export abstract class BaseController {
     req: AuthenticatedRequest,
     res: Response,
     paramName: string = 'id'
-  ): number | null {
+  ): number {
     const id = parseInt(req.params[paramName], 10);
 
     if (isNaN(id)) {
-      res.status(400).json({ error: `Invalid ${paramName}` });
-      return null;
+      throw new ApiError({
+        message: `Invalid ${paramName}`,
+        code: 'INVALID_INPUT',
+        statusCode: 400,
+        details: { paramName, id }
+      });
     }
 
     return id;

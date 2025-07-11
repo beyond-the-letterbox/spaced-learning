@@ -3,6 +3,7 @@ import { authenticateToken } from '../middleware';
 import { reviewHistoryController } from '../controllers';
 import validate from '../middleware/validate.middleware';
 import { getReviewHistoryByCardIdSchema, getReviewsSchema } from '../../schemas';
+import { catchAsync } from '../utils';
 
 /**
  * @swagger
@@ -149,7 +150,7 @@ router.get(
   '/reviews',
   authenticateToken,
   validate(getReviewsSchema),
-  reviewHistoryController.getReviews
+  catchAsync(reviewHistoryController.getReviews)
 );
 
 /**
@@ -201,7 +202,7 @@ router.get(
   '/reviews/card/:id',
   authenticateToken,
   validate(getReviewHistoryByCardIdSchema),
-  reviewHistoryController.getReviewsByCardId
+  catchAsync(reviewHistoryController.getReviewsByCardId)
 );
 
 export default router;

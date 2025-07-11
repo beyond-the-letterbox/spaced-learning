@@ -3,3 +3,4 @@ export * from './cards.service';
 export * from './notes.service';
 export * from './relations.service';
 export * from './review-history.service';
+export * from './api-error.service';

@@ -11,6 +11,7 @@ import {
   getRelationsSchema,
   updateRelationSchema
 } from '../../schemas';
+import { catchAsync } from '../utils';
 
 /**
  * @swagger
@@ -124,7 +125,7 @@ const router = Router();
  *       500:
  *         description: Internal server error
  */
-router.get('/', authenticateToken, validate(getRelationsSchema), relationsController.getRelations);
+router.get('/', authenticateToken, validate(getRelationsSchema), catchAsync(relationsController.getRelations));
 
 /**
  * @swagger
@@ -159,7 +160,7 @@ router.get(
   '/:id',
   authenticateToken,
   validate(getRelationByIdSchema),
-  relationsController.getRelationById
+  catchAsync(relationsController.getRelationById)
 );
 
 /**
@@ -195,7 +196,7 @@ router.get(
   '/type/:type',
   authenticateToken,
   validate(getRelationsByTypeSchema),
-  relationsController.getRelationsByType
+  catchAsync(relationsController.getRelationsByType)
 );
 
 /**
@@ -233,7 +234,7 @@ router.get(
   '/note/:id',
   authenticateToken,
   validate(getRelationsByNoteId),
-  relationsController.getRelationsByNoteId
+  catchAsync(relationsController.getRelationsByNoteId)
 );
 
 /**
@@ -270,7 +271,7 @@ router.post(
   '/',
   authenticateToken,
   validate(createRelationSchema),
-  relationsController.createRelation
+  catchAsync(relationsController.createRelation)
 );
 
 /**
@@ -316,7 +317,7 @@ router.put(
   '/:id',
   authenticateToken,
   validate(updateRelationSchema),
-  relationsController.updateRelation
+  catchAsync(relationsController.updateRelation)
 );
 
 /**
@@ -350,7 +351,7 @@ router.delete(
   '/:id',
   authenticateToken,
   validate(deleteRelationSchema),
-  relationsController.deleteRelation
+  catchAsync(relationsController.deleteRelation)
 );
 
 export default router;

@@ -1,7 +1,14 @@
 import { Router } from 'express';
-import { authenticateToken, validateRequestBody } from '../middleware';
+import { authenticateToken } from '../middleware';
 import { authController } from '../controllers';
-import { loginSchema, registerUserSchema } from '../../schemas/auth.schema';
+import {
+  getCurrentUserSchema,
+  loginSchema,
+  logoutSchema, refreshTokenSchema,
+  registerUserSchema
+} from '../../schemas';
+import validate from '../middleware/validate.middleware';
+import { catchAsync } from '../utils';
 
 const router = Router();
 
@@ -50,7 +57,7 @@ const router = Router();
  *                     refreshToken:
  *                       type: string
  */
-router.post('/register', validateRequestBody(registerUserSchema), authController.register);
+router.post('/register', validate(registerUserSchema), catchAsync(authController.register));
 
 /**
  * @swagger
@@ -92,7 +99,7 @@ router.post('/register', validateRequestBody(registerUserSchema), authController
  *                     refreshToken:
  *                       type: string
  */
-router.post('/login', validateRequestBody(loginSchema), authController.login);
+router.post('/login', validate(loginSchema), catchAsync(authController.login));
 
 /**
  * @swagger
@@ -122,7 +129,7 @@ router.post('/login', validateRequestBody(loginSchema), authController.login);
  *                 accessToken:
  *                   type: string
  */
-router.post('/refresh', authController.refreshToken);
+router.post('/refresh', validate(refreshTokenSchema), catchAsync(authController.refreshToken));
 
 /**
  * @swagger
@@ -147,7 +154,7 @@ router.post('/refresh', authController.refreshToken);
  *       200:
  *         description: Successfully logged out
  */
-router.post('/logout', authController.logout);
+router.post('/logout', validate(logoutSchema), catchAsync(authController.logout));
 
 /**
  * @swagger
@@ -165,6 +172,6 @@ router.post('/logout', authController.logout);
  *             schema:
  *               $ref: '#/components/schemas/User'
  */
-router.get('/me', authenticateToken, authController.getCurrentUser);
+router.get('/me', authenticateToken, validate(getCurrentUserSchema), catchAsync(authController.getCurrentUser));
 
 export default router;

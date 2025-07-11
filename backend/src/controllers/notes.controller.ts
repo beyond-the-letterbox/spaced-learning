@@ -4,104 +4,54 @@ import { notesService } from '../services';
 import { BaseController } from './base.controller';
 
 export class NotesController extends BaseController {
-  public async getNotes(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  public getNotes = async(req: AuthenticatedRequest, res: Response): Promise<void> => {
       const userId = this.extractAuthenticatedUserId(req, res);
 
-      if (!userId) {
-        return;
-      }
+      const data = await notesService.getNotesByUserId(userId);
 
-      const notes = await notesService.getNotesByUserId(userId);
-
-      res.status(200).json(notes);
-    } catch (error) {
-      res.status(500).json({ error: 'Internal server error' });
-    }
+      res.status(200).json({ status: 'success', data });
   }
 
-  public async getNoteById(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  public getNoteById = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
       const userId = this.extractAuthenticatedUserId(req, res);
-
-      if (!userId) {
-        return;
-      }
 
       const noteId = this.getValidatedParameterValue(req, res);
 
-      if (!noteId) {
-        return;
-      }
+      const data = await notesService.getNoteById(userId, noteId);
 
-      const note = await notesService.getNoteById(userId, noteId);
-
-      res.status(200).json(note);
-    } catch (error) {
-      res.status(500).json({ error: 'Internal server error' });
-    }
+      res.status(200).json({ status: 'success', data });
   }
 
-  public async createNote(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const userId = this.extractAuthenticatedUserId(req, res);
-
-      if (!userId) {
-        return;
-      }
+  public createNote = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+     const userId = this.extractAuthenticatedUserId(req, res);
 
       const note = req.body;
-      const createdNote = await notesService.createNote(userId, note);
 
-      res.status(201).json(createdNote);
-    } catch (error) {
-      res.status(500).json({ error: 'Internal server error' });
-    }
+      const data = await notesService.createNote(userId, note);
+
+      res.status(201).json({ status: 'success', data });
   }
 
-  public async updateNote(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  public updateNote = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
       const userId = this.extractAuthenticatedUserId(req, res);
 
-      if (!userId) {
-        return;
-      }
-
       const noteId = this.getValidatedParameterValue(req, res);
-
-      if (!noteId) {
-        return;
-      }
 
       const updatedNote = req.body;
-      const note = await notesService.updateNote(userId, noteId, updatedNote);
 
-      res.status(200).json({ message: 'Note updated successfully', note });
-    } catch (error) {
-      res.status(500).json({ error: 'Internal server error' });
-    }
+      const data = await notesService.updateNote(userId, noteId, updatedNote);
+
+      res.status(200).json({ status: 'success', data });
   }
 
-  public async deleteNote(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  public deleteNote = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
       const userId = this.extractAuthenticatedUserId(req, res);
-
-      if (!userId) {
-        return;
-      }
 
       const noteId = this.getValidatedParameterValue(req, res);
 
-      if (!noteId) {
-        return;
-      }
+      const data = await notesService.deleteNote(userId, noteId);
 
-      const deletedNote = await notesService.deleteNote(userId, noteId);
-
-      res.status(200).json({ message: 'Note deleted successfully', note: deletedNote });
-    } catch (error) {
-      res.status(500).json({ error: 'Internal server error' });
-    }
+      res.status(200).json({ status: 'success', data });
   }
 }
 
