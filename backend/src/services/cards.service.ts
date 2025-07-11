@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { Card, CardUpdatePayload, CardCreatePayload, User } from '../models';
 import { Decimal } from '@prisma/client/runtime/library';
+import { ApiError } from '../errors';
 
 const DAY_IN_MS = 1000 * 60 * 60 * 24;
 
@@ -19,7 +20,14 @@ export class CardsService {
     });
 
     if (!cards) {
-      throw new Error('No cards found');
+      throw new ApiError({
+        statusCode: 404,
+        message: 'No cards found for this user',
+        code: 'NOT_FOUND',
+        details: {
+          userId
+        }
+      });
     }
 
     return cards;
@@ -34,7 +42,15 @@ export class CardsService {
     });
 
     if (!card) {
-      throw new Error('Card not found or user has no permission to view it');
+      throw new ApiError({
+        statusCode: 404,
+        message: 'Card not found',
+        code: 'NOT_FOUND',
+        details: {
+          userId,
+          cardId
+        }
+      });
     }
 
     return card;
@@ -59,7 +75,14 @@ export class CardsService {
     });
 
     if (!cards || cards.length === 0) {
-      throw new Error('No cards found');
+      throw new ApiError({
+        statusCode: 404,
+        message: 'No cards found for review',
+        code: 'NOT_FOUND',
+        details: {
+          userId
+        }
+      });
     }
 
     return cards;
@@ -79,7 +102,15 @@ export class CardsService {
       });
 
       if (!card) {
-        throw new Error('Card not found or user has no permission to view it');
+        throw new ApiError({
+          statusCode: 404,
+          message: 'Card not found',
+          code: 'NOT_FOUND',
+          details: {
+            userId,
+            cardId
+          }
+        })
       }
 
       const reviewedCard = this.getReviewedCard(card, reviewRating);
@@ -109,8 +140,8 @@ export class CardsService {
         })
       ]);
 
-      if (!savedCard) {
-        throw new Error('Failed to update card');
+      if (!savedCard || !review) {
+        throw new ApiError({ message: 'Failed to save card review' });
       }
 
       return savedCard;
@@ -126,7 +157,7 @@ export class CardsService {
     });
 
     if (!createdCard) {
-      throw new Error('Failed to create card');
+      throw new ApiError({ message: 'Failed to create card' });
     }
 
     return createdCard;
@@ -146,7 +177,15 @@ export class CardsService {
     });
 
     if (!card) {
-      throw new Error('Card not found or user has no permission to update it');
+      throw new ApiError({
+        statusCode: 404,
+        message: 'Card not found',
+        code: 'NOT_FOUND',
+        details: {
+          userId,
+          cardId
+        }
+      });
     }
 
     return card;
@@ -161,7 +200,15 @@ export class CardsService {
     });
 
     if (!card) {
-      throw new Error('Card not found or user has no permission to delete it');
+      throw new ApiError({
+        statusCode: 404,
+        message: 'Card not found',
+        code: 'NOT_FOUND',
+        details: {
+          userId,
+          cardId
+        }
+      });
     }
 
     return card;

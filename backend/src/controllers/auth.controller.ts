@@ -1,7 +1,6 @@
 import { authService } from '../services';
 import { AuthenticatedRequest } from '../models';
 import { Response } from 'express';
-import { ApiError } from '../utils';
 import { BaseController } from './base.controller';
 
 export class AuthController extends BaseController {
