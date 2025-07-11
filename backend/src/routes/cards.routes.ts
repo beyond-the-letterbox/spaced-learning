@@ -11,6 +11,7 @@ import {
   updateCardSchema
 } from '../../schemas';
 import validate from '../middleware/validate.middleware';
+import { catchAsync } from '../utils';
 
 const router = Router();
 
@@ -32,7 +33,7 @@ const router = Router();
  *               items:
  *                 $ref: '#/components/schemas/Card'
  */
-router.get('/', authenticateToken, validate(getCardsSchema), cardsController.getCards);
+router.get('/', authenticateToken, validate(getCardsSchema), catchAsync(cardsController.getCards));
 
 /**
  * @swagger
@@ -56,7 +57,7 @@ router.get(
   '/review',
   authenticateToken,
   validate(getCardsForReviewSchema),
-  cardsController.getCardsForReview
+  catchAsync(cardsController.getCardsForReview)
 );
 
 /**
@@ -82,7 +83,12 @@ router.get(
  *             schema:
  *               $ref: '#/components/schemas/Card'
  */
-router.get('/:id', authenticateToken, validate(getCardByIdSchema), cardsController.getCardById);
+router.get(
+  '/:id',
+  authenticateToken,
+  validate(getCardByIdSchema),
+  catchAsync(cardsController.getCardById)
+);
 
 /**
  * @swagger
@@ -106,7 +112,12 @@ router.get('/:id', authenticateToken, validate(getCardByIdSchema), cardsControll
  *             schema:
  *               $ref: '#/components/schemas/Card'
  */
-router.post('/', authenticateToken, validate(createCardSchema), cardsController.createCard);
+router.post(
+  '/',
+  authenticateToken,
+  validate(createCardSchema),
+  catchAsync(cardsController.createCard)
+);
 
 /**
  * @swagger
@@ -137,7 +148,12 @@ router.post('/', authenticateToken, validate(createCardSchema), cardsController.
  *             schema:
  *               $ref: '#/components/schemas/Card'
  */
-router.put('/:id', authenticateToken, validate(updateCardSchema), cardsController.updateCard);
+router.put(
+  '/:id',
+  authenticateToken,
+  validate(updateCardSchema),
+  catchAsync(cardsController.updateCard)
+);
 
 /**
  * @swagger
@@ -178,7 +194,7 @@ router.put(
   '/:id/review',
   authenticateToken,
   validate(processCardReviewSchema),
-  cardsController.processCardReview
+  catchAsync(cardsController.processCardReview)
 );
 
 /**
@@ -202,6 +218,11 @@ router.put(
  *       404:
  *         description: Card not found
  */
-router.delete('/:id', authenticateToken, validate(deleteCardSchema), cardsController.deleteCard);
+router.delete(
+  '/:id',
+  authenticateToken,
+  validate(deleteCardSchema),
+  catchAsync(cardsController.deleteCard)
+);
 
 export default router;
