@@ -1,5 +1,5 @@
 import { FormattedApiError, FormattedErrorBody } from '../models';
-import { ApiError } from '../utils';
+import { ApiError } from '../errors';
 
 
 export class ApiErrorService {

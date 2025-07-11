@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../models';
-import { ApiError } from '../utils';
+import { ApiError } from '../errors';
 
 export abstract class BaseController {
   protected extractAuthenticatedUserId(req: AuthenticatedRequest, res: Response): number  {
