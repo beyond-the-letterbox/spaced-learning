@@ -12,6 +12,9 @@ jest.mock('@prisma/client', () => {
       update: jest.fn(),
       delete: jest.fn(),
     },
+    notes: {
+      create: jest.fn(),
+    },
     review_history: {
       create: jest.fn(),
     },
@@ -178,6 +181,9 @@ describe('CardsService', () => {
         id: cardId,
         ...cardData,
       });
+      (prisma.notes.create as jest.Mock).mockResolvedValue({
+        id: 1,
+      });
 
       const result = await cardsService.createCard(userId, cardData);
 
@@ -185,7 +191,11 @@ describe('CardsService', () => {
         data: {
           ...cardData,
           user_id: userId,
+          note_id: 1,
         },
+        include: {
+          notes: true
+        }
       });
       expect(result).toEqual({
         id: cardId,
