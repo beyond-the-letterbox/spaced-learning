@@ -165,7 +165,7 @@ describe('CardsService', () => {
   });
 
   describe('createCard', () => {
-    it('should create a new card', async () => {
+    it('should create a new card for a given note id', async () => {
       const cardData = {
         user_id: 1,
         note_id: 1,
@@ -181,9 +181,6 @@ describe('CardsService', () => {
         id: cardId,
         ...cardData,
       });
-      (prisma.notes.create as jest.Mock).mockResolvedValue({
-        id: 1,
-      });
 
       const result = await cardsService.createCard(userId, cardData);
 
@@ -192,6 +189,41 @@ describe('CardsService', () => {
           ...cardData,
           user_id: userId,
           note_id: 1,
+        },
+        include: {
+          notes: true
+        }
+      });
+      expect(result).toEqual({
+        id: cardId,
+        ...cardData,
+      });
+    });
+
+    it('should create a new card and create a note if note_id is not provided', async () => {
+      const cardData = {
+        user_id: 1,
+        title: 'Test Card',
+        description: 'Test Card Description',
+        interval: 1,
+        repetitions: 0,
+        ease_factor: 2.5 as unknown as Decimal as unknown as Decimal,
+        due_date: new Date(),
+      };
+
+      (prisma.cards.create as jest.Mock).mockResolvedValue({
+        id: cardId,
+        ...cardData,
+      });
+      (prisma.notes.create as jest.Mock).mockResolvedValue({ id: 6 });
+
+      const result = await cardsService.createCard(userId, cardData);
+
+      expect(prisma.cards.create).toHaveBeenCalledWith({
+        data: {
+          ...cardData,
+          user_id: userId,
+          note_id: 6,
         },
         include: {
           notes: true

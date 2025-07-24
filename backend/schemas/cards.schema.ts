@@ -9,9 +9,10 @@ const cardParams = z.object({
 
 export const createCardBody = z.object({
   noteId: z.coerce
-    .number({ required_error: 'noteId is required', invalid_type_error: 'noteId must be a number' })
+    .number({ invalid_type_error: 'noteId must be a number' })
     .int()
-    .positive({ message: 'noteId must be greater than 0' }),
+    .positive({ message: 'noteId must be greater than 0' })
+    .optional(),
   title: z
     .string({ required_error: 'title is required' })
     .min(1, { message: 'title cannot be empty' })

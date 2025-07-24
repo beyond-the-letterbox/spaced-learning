@@ -149,23 +149,29 @@ export class CardsService {
   }
 
   public async createCard(userId: User['id'], card: CardCreatePayload): Promise<Card> {
-    const note = await this.#prisma.notes.create({
-      data: {
-        title: card.title,
-        content: card.description,
-        user_id: userId
-      }
-    });
+    let noteId = card.note_id;
 
-    if (!note) {
-      throw new ApiError({ message: 'Failed to create note'});
+    if (!noteId) {
+      const note = await this.#prisma.notes.create({
+        data: {
+          title: card.title,
+          content: card.description,
+          user_id: userId
+        }
+      });
+
+      if (!note) {
+        throw new ApiError({ message: 'Failed to create note'});
+      }
+
+      noteId = note.id;
     }
 
     const createdCard = await this.#prisma.cards.create({
       data: {
         ...card,
         user_id: userId,
-        note_id: note?.id
+        note_id: noteId
       },
       include: {
         notes: true
