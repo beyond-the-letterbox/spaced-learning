@@ -2,6 +2,25 @@ import { PrismaClient, Prisma } from '@prisma/client';
 import { CardsService } from '../../src/services';
 import { Card } from '../../src/models';
 import { Decimal } from '@prisma/client/runtime/library';
+import { ApiError } from '../../src/errors';
+
+const mockCard: Card = {
+  id: 1,
+  note_id: 1,
+  user_id: 1,
+  title: 'Test Card',
+  description: 'Test Card Description',
+  interval: 1,
+  repetitions: 0,
+  ease_factor: 2.5 as unknown as Decimal as unknown as Decimal,
+  due_date: new Date(),
+  created_at: new Date(),
+  updated_at: new Date(),
+};
+
+const mockReviewRating = 4;
+const userId = 1;
+const cardId = 1;
 
 jest.mock('@prisma/client', () => {
   const mockPrisma: any = {
@@ -29,24 +48,6 @@ describe('CardsService', () => {
   let cardsService: CardsService;
   let prisma: jest.Mocked<PrismaClient>;
 
-  const mockCard: Card = {
-    id: 1,
-    note_id: 1,
-    user_id: 1,
-    title: 'Test Card',
-    description: 'Test Card Description',
-    interval: 1,
-    repetitions: 0,
-    ease_factor: 2.5 as unknown as Decimal as unknown as Decimal,
-    due_date: new Date(),
-    created_at: new Date(),
-    updated_at: new Date(),
-  };
-
-  const mockReviewRating = 4;
-  const userId = 1;
-  const cardId = 1;
-
   beforeEach(() => {
     jest.clearAllMocks();
     cardsService = new CardsService();
@@ -60,18 +61,23 @@ describe('CardsService', () => {
 
       const result = await cardsService.getCardsByUserId(userId);
 
+      expect(prisma.cards.findMany).toHaveBeenCalledTimes(1);
       expect(prisma.cards.findMany).toHaveBeenCalledWith({
         where: { user_id: userId },
       });
-      expect(result).toEqual(mockCards);
+      expect(result).toStrictEqual(mockCards);
     });
 
-    it('should throw an error when no cards are found', async () => {
-      (prisma.cards.findMany as jest.Mock).mockResolvedValue(null);
+    it('should return an empty array when no cards are found', async () => {
+      (prisma.cards.findMany as jest.Mock).mockResolvedValue([]);
 
-      await expect(cardsService.getCardsByUserId(userId)).rejects.toThrow(
-        'No cards found'
-      );
+      const result = await cardsService.getCardsByUserId(userId);
+
+      expect(prisma.cards.findMany).toHaveBeenCalledTimes(1);
+      expect(prisma.cards.findMany).toHaveBeenCalledWith({
+        where: { user_id: userId },
+      });
+      expect(result).toStrictEqual([]);
     });
   });
 
@@ -81,21 +87,29 @@ describe('CardsService', () => {
 
       const result = await cardsService.getCardById(userId, cardId);
 
+      expect(prisma.cards.findUnique).toHaveBeenCalledTimes(1);
       expect(prisma.cards.findUnique).toHaveBeenCalledWith({
         where: {
           id: cardId,
           user_id: userId,
         },
       });
-      expect(result).toEqual(mockCard);
+      expect(result).toStrictEqual(mockCard);
     });
 
     it('should throw an error when card is not found', async () => {
       (prisma.cards.findUnique as jest.Mock).mockResolvedValue(null);
 
-      await expect(cardsService.getCardById(userId, cardId)).rejects.toThrow(
-        'Card not found'
-      );
+      await expect(cardsService.getCardById(userId, cardId)).rejects.toBeInstanceOf(ApiError);
+      await expect(cardsService.getCardById(userId, cardId)).rejects.toMatchObject({
+        statusCode: 404,
+        message: 'Card not found',
+        code: 'NOT_FOUND',
+        details: {
+          userId,
+          cardId
+        }
+      });
     });
   });
 
@@ -106,6 +120,7 @@ describe('CardsService', () => {
 
       const result = await cardsService.getCardsForReview(userId);
 
+      expect(prisma.cards.findMany).toHaveBeenCalledTimes(1);
       expect(prisma.cards.findMany).toHaveBeenCalledWith({
         where: {
           user_id: userId,
@@ -118,7 +133,7 @@ describe('CardsService', () => {
           due_date: 'asc',
         },
       });
-      expect(result).toEqual(mockCards);
+      expect(result).toStrictEqual(mockCards);
     });
 
     it('should throw an error when no cards are found', async () => {
