@@ -19,17 +19,6 @@ export class CardsService {
       }
     });
 
-    if (!cards) {
-      throw new ApiError({
-        statusCode: 404,
-        message: 'No cards found for this user',
-        code: 'NOT_FOUND',
-        details: {
-          userId
-        }
-      });
-    }
-
     return cards;
   }
 
