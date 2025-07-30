@@ -16,7 +16,7 @@ export interface Card {
 
 export type CardCreatePayload = {
   user_id: number;
-  note_id: number;
+  note_id?: number;
   title: string;
   description?: string | null;
   ease_factor?: Decimal;
